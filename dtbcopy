@@ -1,0 +1,20 @@
+#!/bin/sh
+
+KVER=$1
+DTBDIR=/boot/dtb-$KVER
+
+if [ -z "$KVER" ]; then
+  echo "Usage: $0 <kernel_version>" 1>&2
+  exit 1
+fi
+
+if [ -f $DTBDIR/*.dtb ]; then
+  if [ -f /etc/sysconfig/uboot ]; then
+    UBOOT_DIR=`grep ^UBOOT_DIR /etc/sysconfig/uboot | sed 's/^UBOOT_DIR=//' | cut -d# -f 1`
+  fi
+  if [ -z "$UBOOT_DIR" ]; then
+    UBOOT_DIR=/boot
+  fi
+
+  cp -af $DTBDIR/*.dtb $UBOOT_DIR
+fi
